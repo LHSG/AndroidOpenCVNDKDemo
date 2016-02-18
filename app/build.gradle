@@ -1,0 +1,85 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion "23.0.2"
+
+        defaultConfig.with {
+            applicationId = "com.lhsg.opencvndkdemo"
+            minSdkVersion.apiLevel = 16
+            targetSdkVersion.apiLevel = 23
+            versionCode 1
+            versionName "1.0"
+        }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.pro'))
+            }
+        }
+        ndk {
+            moduleName = "detection_based_tracker"
+            cppFlags.addAll(["-std=c++11", "-fexceptions", "-frtti"])
+            cppFlags.add("-I${file("/Users/artilla/Dev/OpenCV-android-sdk/sdk/native/jni/include")}".toString())
+            ldLibs.addAll(["android", "EGL", "GLESv2", "dl", "log", "z"])
+            stl = "gnustl_static"
+        }
+        productFlavors {
+            create("arm") {
+                ndk.with {
+                    abiFilters.add("armeabi")
+
+                    File curDir = file('./')
+                    curDir = file(curDir.absolutePath)
+                    String libsDir = curDir.absolutePath + "/src/main/jniLibs/armeabi/"
+
+                    ldLibs.add(libsDir + "libopencv_java3.so")
+                }
+            }
+            create("armv7") {
+                ndk.with {
+                    abiFilters.add("armeabi-v7a")
+
+                    File curDir = file('./')
+                    curDir = file(curDir.absolutePath)
+                    String libsDir = curDir.absolutePath + "/src/main/jniLibs/armeabi-v7a/"
+
+                    ldLibs.add(libsDir + "libopencv_java3.so")
+                }
+            }
+            create("x86") {
+                ndk.with {
+                    abiFilters.add("x86")
+
+                    File curDir = file('./')
+                    curDir = file(curDir.absolutePath)
+                    String libsDir = curDir.absolutePath + "/src/main/jniLibs/x86/"
+
+                    ldLibs.add(libsDir + "libopencv_java3.so")
+                }
+            }
+            create("mips") {
+                ndk.with {
+                    abiFilters.add("mips")
+
+                    File curDir = file('./')
+                    curDir = file(curDir.absolutePath)
+                    String libsDir = curDir.absolutePath + "/src/main/jniLibs/mips/"
+
+                    ldLibs.add(libsDir + "libopencv_java3.so")
+                }
+            }
+            create("fat") {
+
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile project(':openCVLibrary310')
+}
